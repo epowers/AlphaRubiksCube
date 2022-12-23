@@ -1,0 +1,18 @@
+name: alpha_rubiks_cube
+channels:
+  - pytorch
+  - nvidia
+  - defaults
+dependencies:
+  - cuda=11.7.1=0
+  - ipython=8.7.0=py310h06a4308_0
+  - numpy=1.23.4=py310hd5efca6_0
+  - pip=22.3.1=py310h06a4308_0
+  - pytest=7.1.2=py310h06a4308_0
+  - python=3.10.8=haa1d7c7_0
+  - pytorch=1.13.1=py3.10_cuda11.7_cudnn8.5.0_0
+  - pytorch-cuda=11.7=h67b0de4_1
+  - torchaudio=0.13.1=py310_cu117
+  - torchvision=0.14.1=py310_cu117
+  - pip:
+      - gymnasium==0.27.0
