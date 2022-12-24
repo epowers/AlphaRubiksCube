@@ -2,6 +2,7 @@ name: alpha_rubiks_cube
 channels:
   - pytorch
   - nvidia
+  - conda-forge
   - defaults
 dependencies:
   - cuda=11.7.1=0
@@ -14,5 +15,9 @@ dependencies:
   - pytorch-cuda=11.7=h67b0de4_1
   - torchaudio=0.13.1=py310_cu117
   - torchvision=0.14.1=py310_cu117
+  - jupyterlab=3.5.0=py310h06a4308_0
+  - matplotlib=3.6.2=py310h06a4308_0
+  - scipy=1.9.3=py310hd5efca6_0
+  - k3d=2.15.2=pyhd8ed1ab_0
   - pip:
       - gymnasium==0.27.0
