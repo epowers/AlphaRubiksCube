@@ -6,7 +6,7 @@ from alpha_rubiks_cube.env import Env
 from alpha_rubiks_cube.model import Model
 from alpha_rubiks_cube.trainer import Trainer
 
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+device = torch.device('cuda' if torch.cuda.is_available() else 'mps' if torch.backends.mps.is_available() else 'cpu')
 
 args = {
     'batch_size': 64,
