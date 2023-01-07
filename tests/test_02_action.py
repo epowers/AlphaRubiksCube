@@ -23,6 +23,7 @@ class TestAction:
         action = action_space.sample(mask=mask)
         assert int(action) == 2, "Action::sample() with a mask failed to select the only valid action."
 
+        mask = np.array([0, 0, 1, 0, 0, 0], dtype=np.int8)
         action = action_space.pop_sample(mask=mask)
         assert int(action) == 2, "Action::pop_sample() with a mask failed to select the only valid action."
 

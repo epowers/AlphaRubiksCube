@@ -1,8 +1,7 @@
-import gymnasium as gym
 import numpy as np
 import torch
 
-from .action import ActionSpace
+from .action import Action, ActionSpace
 from .state import State, ObservationSpace
 
 
@@ -15,13 +14,22 @@ class Env:
     _step_count = 0
 
     def __init__(self, state=None, args=None):
-        if state is None: state = State(state=self.GOAL_STATE)
+        if state is None: state = self.get_init_state()
         if args is None: args = dict()
         self.state = state
         self.args = args
 
+    def get_init_state(self):
+        return State(state=self.GOAL_STATE)
+
+    def get_state_size(self):
+        return self.observation_space.get_size()
+
+    def get_action_size(self):
+        return self.action_space.get_size()
+
     def reward(self, state, action, next_state):
-        return 1.0 if np.array_equal(next_state.state, self.GOAL_STATE) else 0.0
+        return 1.0 if np.array_equal(next_state._state, self.GOAL_STATE) else 0.0
 
     def step(self, action, state=None):
         if state is None: state=self.state
@@ -38,3 +46,14 @@ class Env:
         info = None # dict
 
         return (observation, reward, terminated, truncated, info)
+
+    def get_next_state(self, state, action):
+        action = Action(action)
+        observation, reward, terminated, truncated, info = self.step(action, state=state)
+        return observation
+
+    def is_win(self, state):
+        return np.array_equal(state._state, self.GOAL_STATE)
+
+    def get_reward(self, state):
+        return 1 if self.is_win(state) else 0

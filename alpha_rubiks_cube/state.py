@@ -1,4 +1,4 @@
-import gymnasium as gym
+from typing import Any, Iterable, Mapping, Sequence
 import numpy as np
 import torch
 
@@ -24,29 +24,32 @@ class State:
     OBSERVATION_SPACE_SHAPE = ((8, 3),) * 8 + ((12, 2),) * 12
     SPARSE_STATE_SHAPE = (2, 12, 12, 3)
     DENSE_STATE_SHAPE = (256,) # (8 * (8 + 3) + 12 * (12 + 2),)
-    state = None
+    _state = None
 
     def __init__(self, state=None):
         if state is None:
-            self.state = torch.zeros(size=self.COMPACT_STATE_SHAPE, dtype=torch.long)
+            self._state = torch.zeros(size=self.COMPACT_STATE_SHAPE, dtype=torch.long)
         elif isinstance(state, State):
-            self.state = torch.clone(state.state)
+            self._state = torch.clone(state._state)
         elif isinstance(state, torch.Tensor) and state.size() == self.COMPACT_STATE_SHAPE:
-            self.state = torch.clone(state)
+            self._state = torch.clone(state)
         else:
             self.set_state(state)
 
     @property
     def is_valid(self):
-        return torch.any(self.state != 0)
+        return torch.any(self._state != 0)
 
     def set_state(self, state):
+        self._state = torch.tensor(state, dtype=torch.long)
+
+    def set_state_from_pos_orient(self, state):
         for i, (position, orientation) in zip(range(20), state):
             if i < 8:
                 assert(position >= 0 and position < 8 and orientation >= 0 and orientation < 3)
             else:
                 assert(position >= 0 and position < 12 and orientation >= 0 and orientation < 2)
-        self.state = torch.tensor(state, dtype=torch.long)
+        self._state = torch.tensor(state, dtype=torch.long)
 
     def to_tensor(self):
         '''Convert an array of:
@@ -150,7 +153,7 @@ class State:
         '''
         result = torch.zeros(size=self.DENSE_STATE_SHAPE, dtype=torch.long)
         if self.is_valid:
-            for i, (position, orientation) in zip(range(20), self.state):
+            for i, (position, orientation) in zip(range(20), self._state):
                 if i < 8:
                     i_position = i * 11 + position
                     i_orientation = i * 11 + 8 + orientation
@@ -162,12 +165,11 @@ class State:
         return result
 
 
-class ObservationSpace(gym.spaces.MultiDiscrete):
-    def __init__(self, seed=None):
-        nvec = State.OBSERVATION_SPACE_SHAPE
-        super().__init__(nvec=nvec, seed=seed)
+class ObservationSpace:
+    @classmethod
+    def get_size(cls):
+        return 40
 
     def sample(self, mask=None):
-        # NOTE: warn if a mask is attempted.
         return np.block([[np.random.permutation(np.arange(8)), np.random.permutation(np.arange(12))],
-                [np.random.choice(3, size=(8,)), np.random.choice(2, size=(12,))]]).astype(self.dtype)
+                [np.random.choice(3, size=(8,)), np.random.choice(2, size=(12,))]]).astype(np.int64)
