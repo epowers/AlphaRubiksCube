@@ -14,5 +14,5 @@ conda develop .
 Optional install cuda:
 
 ```
-conda install -c nvidia cuda=11.7.1 pytorch-cuda=11.7
+conda install -c nvidia -c pytorch cuda=11.7.1 pytorch-cuda=11.7
 ```
