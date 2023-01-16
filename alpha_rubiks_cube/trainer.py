@@ -34,18 +34,17 @@ class Trainer:
             state = self.env.get_next_state(state, action)
             reward = self.env.get_reward(state)
 
-            if reward:
+            if reward is not None:
                 return [(hist_state, hist_action_probs, reward)
                                   for hist_state, hist_action_probs in train_examples]
 
         return []
 
     def learn(self):
-        depth = 1
-
         for i in range(1, self.args['numIters'] + 1):
             print("Learning iteration {}/{}".format(i, self.args['numIters']))
             train_examples = []
+            depth = int(i * self.args['maxDepth'] / self.args['numIters']) + 1
 
             for eps in range(self.args['numEps']):
                 state = self.env.observation_space.sample(depth=np.random.randint(1, depth+1))
@@ -57,9 +56,6 @@ class Trainer:
             pi_loss, v_loss = self.train(train_examples)
             filename = self.args['checkpoint_path']
             self.save_checkpoint(folder="checkpoints", filename=filename)
-
-            if pi_loss < 10e-1 and v_loss < 10e-3:
-                depth += 1
 
     def train(self, examples):
         num_examples = len(examples)
@@ -101,8 +97,8 @@ class Trainer:
                 optimizer.step()
 
                 print("Examples:")
-                print(out_pi[0])
-                print(target_pis[0])
+                print(out_pi[0].cpu())
+                print(target_pis[0].cpu())
 
         if pi_losses and v_losses:
             pi_loss = np.mean(pi_losses)

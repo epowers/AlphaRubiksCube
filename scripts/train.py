@@ -13,7 +13,8 @@ args = {
     'numIters': 500,                                # Total number of training iterations
     'num_simulations': 100,                         # Total number of MCTS simulations to run when deciding on a move to play
     'numEps': 100,                                  # Number of full envs (episodes) to run during each iteration
-    'numAttempts': 40,
+    'numAttempts': 40,                              # MCTS iterations
+    'maxDepth': 20,                                 # Max number of MCTS example depths
     'numItersForTrainExamplesHistory': 20,
     'epochs': 2,                                    # Number of epochs of training per iteration
     'checkpoint_path': 'latest.pth'                 # location to save latest set of weights

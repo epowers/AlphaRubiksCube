@@ -57,4 +57,4 @@ class Env:
         return np.array_equal(state._state, self.GOAL_STATE)
 
     def get_reward(self, state):
-        return 1 if self.is_win(state) else 0
+        return 1 if self.is_win(state) else None
