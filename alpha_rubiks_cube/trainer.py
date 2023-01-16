@@ -6,6 +6,7 @@ import torch
 import torch.optim as optim
 
 from .mcts import MCTS
+from .state import State
 
 
 class Trainer:
@@ -15,11 +16,10 @@ class Trainer:
         self.args = args
         self.mcts = MCTS(self.env, self.model, self.args)
 
-    def exceute_episode(self):
+    def execute_episode(self, state):
         train_examples = []
-        state = self.env.get_init_state()
 
-        while True:
+        for i in range(self.args['numItersForTrainExamplesHistory']):
             self.mcts = MCTS(self.env, self.model, self.args)
             root = self.mcts.run(self.model, state)
 
@@ -34,40 +34,47 @@ class Trainer:
             state = self.env.get_next_state(state, action)
             reward = self.env.get_reward(state)
 
-            if reward is not None:
-                ret = []
-                for hist_state, hist_action_probs in train_examples:
-                    # [state, actionProbabilities, reward]
-                    ret.append((hist_state, hist_action_probs, reward))
+            if reward:
+                return [(hist_state, hist_action_probs, reward)
+                                  for hist_state, hist_action_probs in train_examples]
 
-                return ret
+        return []
 
     def learn(self):
+        depth = 1
+
         for i in range(1, self.args['numIters'] + 1):
-            # print("{}/{}".format(i, self.args['numIters']))
+            print("Learning iteration {}/{}".format(i, self.args['numIters']))
             train_examples = []
 
             for eps in range(self.args['numEps']):
-                iteration_train_examples = self.exceute_episode()
+                state = self.env.observation_space.sample(depth=np.random.randint(1, depth+1))
+                iteration_train_examples = self.execute_episode(state)
                 train_examples.extend(iteration_train_examples)
 
+            print('Generated {} training examples with depth between 1 and {}.'.format(len(train_examples), depth))
             shuffle(train_examples)
-            self.train(train_examples)
+            pi_loss, v_loss = self.train(train_examples)
             filename = self.args['checkpoint_path']
             self.save_checkpoint(folder="checkpoints", filename=filename)
 
+            if pi_loss < 10e-1 and v_loss < 10e-3:
+                depth += 1
+
     def train(self, examples):
+        num_examples = len(examples)
+
         optimizer = optim.Adam(self.model.parameters(), lr=5e-4)
         pi_losses = []
         v_losses = []
 
+        self.model.train()
+
+        print()
+
         for epoch in range(self.args['epochs']):
-            self.model.train()
-
-            batch_idx = 0
-
-            while batch_idx < int(len(examples) / self.args['batch_size']):
-                sample_ids = np.random.randint(len(examples), size=self.args['batch_size'])
+            for batch_idx in range(max(1, num_examples // self.args['batch_size']) if num_examples else 0):
+                sample_ids = np.random.randint(num_examples, size=min(num_examples, self.args['batch_size']))
                 states, pis, vs = list(zip(*[examples[i] for i in sample_ids]))
                 states = tuple(np.array(state._state, dtype=np.float64).flatten() for state in states)
                 states = torch.FloatTensor(np.array(states, dtype=np.float64))
@@ -93,14 +100,20 @@ class Trainer:
                 total_loss.backward()
                 optimizer.step()
 
-                batch_idx += 1
+                print("Examples:")
+                print(out_pi[0])
+                print(target_pis[0])
 
-            print()
-            print("Policy Loss", np.mean(pi_losses))
-            print("Value Loss", np.mean(v_losses))
-            print("Examples:")
-            print(out_pi[0].detach())
-            print(target_pis[0])
+        if pi_losses and v_losses:
+            pi_loss = np.mean(pi_losses)
+            v_loss = np.mean(v_losses)
+        else:
+            pi_loss = float('inf')
+            v_loss = float('inf')
+
+        print("Policy Loss", pi_loss)
+        print("Value Loss", v_loss)
+        return pi_loss, v_loss
 
     def loss_pi(self, targets, outputs):
         loss = -(targets * torch.log(outputs)).sum(dim=1)
@@ -115,6 +128,7 @@ class Trainer:
             os.mkdir(folder)
 
         filepath = os.path.join(folder, filename)
-        torch.save({
+        checkpoint = {
             'state_dict': self.model.state_dict(),
-        }, filepath)
+        }
+        torch.save(checkpoint, filepath)

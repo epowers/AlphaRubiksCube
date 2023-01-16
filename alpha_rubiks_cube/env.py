@@ -19,8 +19,9 @@ class Env:
         self.state = state
         self.args = args
 
-    def get_init_state(self):
-        return State(state=self.GOAL_STATE)
+    @classmethod
+    def get_init_state(cls):
+        return State(state=cls.GOAL_STATE)
 
     def get_state_size(self):
         return self.observation_space.get_size()
@@ -34,6 +35,7 @@ class Env:
     def step(self, action, state=None):
         if state is None: state=self.state
         next_state = State(state=state)
+        action = Action(action)
 
         action(next_state)
 
@@ -48,7 +50,6 @@ class Env:
         return (observation, reward, terminated, truncated, info)
 
     def get_next_state(self, state, action):
-        action = Action(action)
         observation, reward, terminated, truncated, info = self.step(action, state=state)
         return observation
 

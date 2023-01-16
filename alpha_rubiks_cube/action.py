@@ -3,9 +3,12 @@ import torch
 
 
 class Action:
-    def __init__(self, value):
+    def __init__(self, value, reverse=False):
+        if isinstance(value, self.__class__):
+            value = value.value
         assert(value >= 0 and value < 6)
         self.value = value
+        self.reverse = reverse
 
     def __int__(self):
         return int(self.value)
@@ -16,6 +19,7 @@ class Action:
     def __call__(self, state):
         a = self.value
         t = state._state
+        r = -1 if self.reverse else 1
 
         c_sel, e_sel = {
             0: ((4,5,6,7), (8,9,10,11)), # rotate posX
@@ -31,17 +35,19 @@ class Action:
             c = t[0:8]
             i = torch.argwhere(torch.isin(c[:, 0], torch.tensor(c_sel)))
             # rotate corner orientations
-            c[i, 1] = (c[i, 1] + 1) % 3
+            c[i, 1] = (c[i, 1] + r) % 3
             # rotate corner positions
-            c[i] = torch.roll(c[i], -1, dims=0)
+            c[i] = torch.roll(c[i], -1*r, dims=0)
 
         # rotate edges
         e = t[8:20]
         i = torch.argwhere(torch.isin(e[:, 0], torch.tensor(e_sel)))
         # rotate edge orientations
-        e[i, 1] = (e[i, 1] + 1) % 2
+        e[i, 1] = (e[i, 1] + r) % 2
         # rotate edge positions
-        e[i] = torch.roll(e[i], -1, dims=0)
+        e[i] = torch.roll(e[i], -1*r, dims=0)
+
+        return state
 
 
 class ActionSpace:

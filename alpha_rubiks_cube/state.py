@@ -26,6 +26,9 @@ class State:
     DENSE_STATE_SHAPE = (256,) # (8 * (8 + 3) + 12 * (12 + 2),)
     _state = None
 
+    def __str__(self):
+        return str(self._state)
+
     def __init__(self, state=None):
         if state is None:
             self._state = torch.zeros(size=self.COMPACT_STATE_SHAPE, dtype=torch.long)
@@ -170,6 +173,19 @@ class ObservationSpace:
     def get_size(cls):
         return 40
 
-    def sample(self, mask=None):
-        return np.block([[np.random.permutation(np.arange(8)), np.random.permutation(np.arange(12))],
-                [np.random.choice(3, size=(8,)), np.random.choice(2, size=(12,))]]).astype(np.int64)
+    def sample(self, mask=None, depth=None):
+        # scramble state with random actions
+        from .action import Action, ActionSpace
+        from .env import Env
+        action_space = ActionSpace()
+        state = Env.get_init_state()
+        if depth is None:
+            depth = np.random.randint(self.get_size() * ActionSpace.get_size())
+
+        for epoch in range(depth):
+            action = ActionSpace().sample()
+            action.reverse = True
+            state = action(state)
+            state = State(state)
+
+        return state
