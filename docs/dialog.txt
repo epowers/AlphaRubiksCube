@@ -1,0 +1,244 @@
+001_intro:
+Welcome to the presentation of.  Alpha.  Rubiks.  Cube.
+An introduction to neural networks.
+Dream Works Tec Con 2023.
+Dialed in and connected.
+
+002_audience:
+This presentation intends to introduce complex topics to a wide audience in a compressed timeframe.
+You dont need to be a machine learning expert or a Rubiks Cube champion to understand the main points in this presentation.
+There will be basic elementary school algebra, some concepts explained in Python source code, and many technical terms that will not be explained.
+Please be willing to suffer through mistakes and incomplete information.
+Hopefully everyone will learn from a few ephiphanies and have an easier time reading other neural network texts.
+
+003_overview:
+This presentation steps quickly through the history of AlphaZero and jumps backward into an explanation of neural networks.
+Our introduction takes a different approach in emphasizing what we think is the most important concept to grasp when learning about and understanding how neural networks work.
+We briefly introduce reinforcement learning and monte carlo tree search.
+Then we define the state, action, and reward, which are three components of reinforcement learning.
+We present an overview of key design concepts of Alpha Rubiks Cube.  And then show results.
+
+004_inspiration:
+But first one might ask, “Why am I here?”
+“What inspires me?”
+Consider this inspiration from a renowned professor at Cal Tec.
+He asks.
+“What should we teach first, if were going to teach.”
+And in the context of machine learning, consider the most important answer, perhaps the motivation behind technology itself, might also be inspired by Richard Feynman.
+“All knowledge. Can be represented as an. Equation.”
+
+005_alphazero:
+Alpha Zero is a computer program developed by artificial intelligence research company Deep Mind to master the games of chess, showgi and go.
+
+006_history:
+The precursor to Alpha Zero was an artificial intelligence system called Alpha Go.
+Go is a game with black and white pieces where players take turns placing their colored pieces on the board.
+Alpha Go learned from a database of human data, analyzing and learning from human expert positions and moves, using a technique called supervised learning.
+Alpha Go evolved into Alpha Zero.
+Alpha Zero distinguished itself by learning entirely on its own, learning how to play alone, with no human expert, using a technique called self learning.
+The fundamental technique behind Alpha Go and Alpha Zero proved powerful enough that Deep Mind has been able to apply the technique to other complex domains, including protein structure predictions.
+Our approach starts with these fundamental techniques.
+
+007_alphago:
+However, as soon as we dive into the deep end, and read about Alpha Go.
+Alpha Zero.
+Supervised Learning, Transfer Learning, Reinforcement Learning, Policy Networks, Value Networks, Two Heads, Agents, Environment, State, Monte Carlo Tree Search, Nodes, Epochs, Learning Rate, Gradient Descent, Optimizers, Batches.
+
+008_explode:
+I dohnt know about you, but, my neural network explodes.
+
+009_neurons:
+So lets keep it simple.  And talk about artificial neurons.  Just the concept.
+
+010_phenomenon:
+Lets start with our original context. Inspired by the great professor.
+Assume that everything we talk about in artificial intelligence right now is trying to answer big questions.
+And neural networks might be one way to answer questions.
+Assume there is an approximation of phenomenon.
+What we see in the world, how people behave, the weather, protein folding, winning games, solving cubes.
+That can be represented as an equation.
+Start thinking about everything as an equation.
+
+011_equation:
+In computer science, some functions are equations.
+Functions take an input and produce an output.
+Here is a function where we present numbers, ex, as input to a function.
+And the function outputs numbers, why.
+We dont know what happens inside of the function.
+It might be a black box.  Or it might be an equation we can understand.
+
+012_linear:
+We understand linear equations.
+Remember elementary school?  I dohnt.
+I am an artificial voice.
+But you remember graphs and lines and functions.
+You remember the letter em and bee representing slope and intercept.
+You may even remember the linear equation why equals em ex plus bee.
+These simple equations are functions in the same way a neural network is a function.
+A neural network takes an input. ex.
+Calculates using a function as simple as double-u ex plus bee.
+And outputs predictions, why.
+
+013_linear_linear:
+Unfortunately, most phenomenon in the world cannot be expressed with a simple linear equation.
+So neural networks use many linear equations.
+Many neurons where each neuron is a function with many inputs and outputs.
+And neurons connected in a variety of ways.
+However, combinations of linear functions are not non-linear.
+Neural networks need functions that are non-linear in order to approximate non-linear phenomenon.
+
+014_activation:
+So each neuron has an activation function.
+While it is possible to use a linear function as an activation function, most activation functions are non-linear.
+The activation function “rell you” is simple and fast to implement in hardware.
+
+015_piecewise:
+And “rell you” might help humans understand how to approximate non-linear functions.
+When many “rell you” functions are paired with linear functions, the result is a piecewise linear approximation.
+Each pairing of “rell you” with a linear function can be thought of as a neuron that enables a segment and contributes to all segments of a piecewise linear approximation.
+So we have a mechanism for approximating phenomenon, we assume that phenomenon can be represented as equations, we have at least one simple way to do piecewise linear approximations, but we still have unknowns.
+Now that we have possibly many linear functions, how do we pick weights?
+Does some poor doctorate student have to tweak each one by hand?
+
+016_training:
+Training is the process of finding the weights.
+Now unfortunately training is complicated enough that a simple text to speech engine cannot begin to explain it.
+This presentation will introduce the idea behind training and leave the rest to Google, Stanford, and the many brilliant videos, courses, tutorials, and blogs out there in the world.
+
+017_training_loop:
+When you simplify all of the terms and logic and functions and techniques and terminology inside training loops.
+The most important part of the training process is.  To iteratively, adjust, weights.
+The training loop is often a, for, loop, with a certain number of epocks.
+Typical training involves a lot of input training data.
+So there is another loop that iterates over the training data set.
+The neural network model itself starts out with random or some predetermined weights.
+And given an input, ex.
+The model will make a prediction.
+The first prediction is as random as the weights.
+But the first prediction is immediately compared to training data.
+And the difference between the prediction and training data is used to adjust the weights.
+In our simple example, this linear loss function adjusts weights toward a target by a ratio of the learning rate.
+A real training loop is a lot more complex with developer defined parameters such as learning rate.
+Someday soon this slide may be obsolete as neural networks learn to generate better training mechanisms.
+
+018_gradient_descent:
+Before neural networks learn how to learn on their own.
+Machine learning developers need to understand the current process of using gradient descent to minimize loss.
+This topic is difficult to comprehend.
+But hopefully a few distinctions will help if you watch Andrew Ing on YouTube.
+Loss is a function that calculates a difference between our target training data and the model predictions.
+Loss is NOT the function were predicting.
+But loss tells us if were getting closer to approximating phenomenon, as well as how, close.
+Loss helps us adjust model weights, similar to how we adjusted weights with a simple linear loss function in the last slide.
+
+019_reinforcement_learning:
+If your neurons r fried by now, dohnt worry.
+Were about to throw more concepts at you with little to no explanation.
+
+020_training_cycle:
+Reinforcement learning is a type of machine learning described as a cycle mainly involving state, action, and reward.
+But why are we talking about a completely new training loop?
+Didnt we just finish very explicitly simplifying a training loop and basically boil it down to adjusting weights?
+Well yes.  And no.  And its complicated.
+Neural network training is more like a big ball of wibbly wobbly, timey wimey.  Stuff.
+Nevertheless, reinforcement learning is a loop around inner training loops.
+
+021_mcts:
+Montey Carlo Tree Search.  Lets go.
+
+022_node_search:
+Monte Carlo Tree Search represents states and actions in a tree.
+Maybe think of it as a decision tree.
+When you play chess, you may think a few moves ahead, and in your brain, you think through the steps like a tree, searching for your next move.
+Monte Carlo Tree Search attempts to generically make objective choices by tracking branches of the tree that result in wins.
+But there is way too much in Monte Carlo Tree Search to attempt to explain in our presentation, so please review these amazing blogs for more information.
+
+023_raw_nn:
+Except you do need to know that in Alpha Zero.  Monte Carlo Tree Search is only used during training.
+Once the model is trained, the model has learned how to directly make predictions about the next action. And no searching is required.
+
+024_rubiks_cube:
+Its time to get out your Rubiks Cube.
+Please remove the cube from the clear plastic container and hold the cube with both hands, one on each side.
+I cant. I dohnt have hands.
+
+025_my_cube:
+This cube is mine.  Who messed with it?
+
+026_state:
+The cube has 8 corners, 12 edges, and 6 centers.
+If the mechanical parts are not pulled apart and re-arranged improperly, then there are mechanical constraints limiting the number of possible states of the cube to more than 43 quintillion.
+
+027_actions:
+The cube allows rotations around three axes.
+While speed cubers have complex movements with their fingers that move different faces different directions and degrees at the same time, my computer brain works better when we keep it simple.
+So for now, only counterclockwise rotation, only 90 degrees, and only one face at a time.
+
+028_reward:
+Unfortunately, we only have one winning state.
+Other games.  Go.  Chess.  Connect four.  Have many ways to win, and in some cases, one way to start.
+Rubiks cube presents a different problem, many random starting positions, as many as 43 quintillion, and only one winning position.
+The good news is theoretically it only takes 20 moves to solve the cube from any possible state.
+
+029_design:
+Now that we know some basics about neural networks, reinforcement learning, Monte Carlo Tree Search.
+And how we can represent a Rubiks Cube in terms that a computer can understand.
+Should we give this a shot?  Should we put those pieces together and solve this cube?
+
+030_agent:
+Our agent is going to be a neural network.
+The agent will be trained with reinforcement learning using Monte Carlo Tree Search.
+The agent will learn a policy network that predicts action from state.
+The policy network is the only piece we need to solve the cube.
+However, during training, we also need a value network to help us predict winning states.
+Because.  We cannot search through 43 quintillion states.
+
+031_pytorch:
+The extremely simple training loop evolves slightly with pi torch.
+With pi torch, we add an optimizer to help us with gradient descent and we expand the complexity of our loss function.
+But generally the same concepts happen in the inner loop of training.
+
+032_lifecycle:
+Our training lifecycle starts with model weight initialization.
+Then most time is spent as our training loop adjusts weights.
+As we train, we regularly evaluate our network accuracy.
+And intermittently, we save good model weights.
+
+033_gather:
+During training, Monte Carlo Tree Search is used to generate sample states and actions for training.
+Reward is used to highlight winning state-action pairs.
+An outer loop starts with different starting states, then an inner loop simulates a certain number of actions.
+Monte Carlo Tree Search looks ahead for winning solutions.
+And selects the best action.
+If the action results in a reward, then that state-action-reward tuple is added to the list of examples.
+
+034_mcts_rl:
+Our outer loop is a number of iterations generating winning examples, sampling from those examples, and training the policy and value neural networks with those generated examples.
+The purpose of this process is for the neural network to learn from a bunch of random winning examples.
+And possibly losing examples when learning win-loss games.
+
+035_results:
+Well smart computer voice?  Show me results.  Hold your brethe.  I am holding mine.  Who will win?
+
+036_logs:
+Well.  Are you impressed?
+If you want, I can search YouTube for speed cubing and play that.
+So this is where my system is in learning how to solve a rubiks cube.
+Notice on the second line how the depth is 1.
+While the sixth line has a depth between 1 and 2.
+That is me learning.
+First I learned how to move a single face 90 degrees to solve the cube.
+And now I am learning how to make two moves to solve the cube.
+My programmer, however, is impatient, complains about how much time I am taking, his wife is staring at him to make dinner, and so I get shut down regularly.
+
+037_display:
+But I really love to be able to show off some graphics, so here is the start of how I want you to see what I am doing.
+A three dimensional cube.  In a web browser.
+
+038_github:
+So if you want to help me grow, all of my code is available online in a public git repository.
+Not only can you review everything in detail that we have talked about, but maybe, checkout the code and run it on your own.
+The instructions are non-existent and help is nowhere to be found.
+
+039_thank_you:
+Thank you so much for your interest and attention!
